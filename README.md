@@ -42,6 +42,10 @@ It was inspired by Python's Scrapy. XPathSelector uses PHP DOM extension.
 $xs = \XPathSelector\Document::loadXMLFile('sample.xml');
 echo $xs->select('/bookstore/book[1]/title')->extract();
 ```
+Result:
+```
+Everyday Italian
+```
 ###Extract all titles
 ```php
 <?php
@@ -50,6 +54,13 @@ foreach ($xs->select('/bookstore/book/title') as $title) {
 	echo $title->extract();
 	echo PHP_EOL;
 }
+```
+Result:
+```
+Everyday Italian
+Harry Potter
+XQuery Kick Start
+Learning XML
 ```
 ###Extract all the prices
 ```php
@@ -60,6 +71,13 @@ foreach ($xs->select('/bookstore/book/price') as $price) {
     echo PHP_EOL;
 }
 ```
+Result:
+```
+30.00
+29.99
+49.99
+39.95
+```
 ###Extract price nodes with price>35
 ```php
 <?php
@@ -68,4 +86,9 @@ foreach ($xs->select('/bookstore/book[price>35]/price') as $price) {
 	echo $price->extract();
     echo PHP_EOL;
 }
+```
+Result:
+```
+49.99
+39.95
 ```
