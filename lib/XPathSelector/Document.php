@@ -1,6 +1,5 @@
 <?php
 namespace XPathSelector;
-//use Erepublik\Exception\ScrapeException;
 use DOMXPath;
 use DOMDocument;
 
@@ -11,6 +10,11 @@ class Document {
 		return new Node($doc,$xpath);
 	}
 	
+	public static function loadHTMLFile($filename) {
+		$doc = @DOMDocument::loadHTMLFile($filename);
+		return self::load($doc);
+	}
+	
 	public static function loadHTML($html) {
 		$doc = @DOMDocument::loadHTML($html);
 		return self::load($doc);
@@ -18,6 +22,11 @@ class Document {
 	
 	public static function loadXML($xml) {
 		$doc = DOMDocument::loadXML($xml);
+		return self::load($doc);
+	}
+	
+	public static function loadXMLFile($filename) {
+		$doc = DOMDocument::load($filename);
 		return self::load($doc);
 	}
 }
