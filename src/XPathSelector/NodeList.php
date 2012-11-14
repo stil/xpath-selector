@@ -20,6 +20,11 @@ class NodeList implements Iterator, Countable
         $this->length = count($this->result);
     }
     
+    public function registerNamespace($prefix, $namespaceURI)
+    {
+        $this->xpath->registerNamespace($prefix, $namespaceURI);
+    }
+    
     public function item($n)
     {
         if (isset($this->result[$n])) {

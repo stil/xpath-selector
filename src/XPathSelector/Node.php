@@ -13,6 +13,11 @@ class Node
         $this->xpath = $xpath;
     }
     
+    public function registerNamespace($prefix, $namespaceURI)
+    {
+        $this->xpath->registerNamespace($prefix, $namespaceURI);
+    }
+    
     public function select($search)
     {
         return new NodeList(
