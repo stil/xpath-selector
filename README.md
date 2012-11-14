@@ -6,6 +6,12 @@ It was inspired by Python's Scrapy. XPathSelector uses PHP DOM extension.
 Recommended way to install XPathSelector is through [Composer](http://getcomposer.org/).
 ```json
 {
+    "repositories": [
+		{
+            "type": "vcs",
+            "url": "git://github.com/stil/xpath-selector.git"
+        }
+    ],
     "require": {
         "stil/xpath-selector": "*"
     }
