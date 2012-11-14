@@ -2,7 +2,16 @@
 ##Description
 This is simple utlitity which helps you navigate in HTML or XML document.
 It was inspired by Python's Scrapy. XPathSelector uses PHP DOM extension.
-##Example XML document (sample.xml)
+##Installation
+Recommended way to install XPathSelector is through [Composer](http://getcomposer.org/).
+```json
+{
+    "require": {
+        "stil/xpath-selector": "*"
+    }
+}
+```
+##Example XML document
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <bookstore>
@@ -40,27 +49,32 @@ It was inspired by Python's Scrapy. XPathSelector uses PHP DOM extension.
 ```php
 <?php
 $xs = \XPathSelector\Document::loadXMLFile('sample.xml');
-echo $xs->select('/bookstore/book[1]/title')->extract();
+$firstBook = $xs->select('/bookstore/book[1]');
+echo $firstBook->select('title')->extract();
+// or directly
+//echo $xs->select('/bookstore/book[1]/title')->extract();
 ```
 Result:
 ```
 Everyday Italian
 ```
-###Extract all titles
+###Extract all titles with their prices
 ```php
 <?php
 $xs = \XPathSelector\Document::loadXMLFile('sample.xml');
-foreach ($xs->select('/bookstore/book/title') as $title) {
-	echo $title->extract();
+foreach ($xs->select('/bookstore/book') as $book) {
+	echo 'Title: '.$book->select('title')->extract();
+	echo PHP_EOL;
+	echo 'Price: '.$book->select('price')->extract();
 	echo PHP_EOL;
 }
 ```
 Result:
 ```
-Everyday Italian
-Harry Potter
-XQuery Kick Start
-Learning XML
+[Title: Everyday Italian][Price: 30.00]
+[Title: Harry Potter][Price: 29.99]
+[Title: XQuery Kick Start][Price: 49.99]
+[Title: Learning XML][Price: 39.95]
 ```
 ###Extract all the prices
 ```php
