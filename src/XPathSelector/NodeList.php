@@ -32,7 +32,7 @@ class NodeList implements Iterator, Countable
     public function rewind()
     {
         if (!$this->hasResults()) {
-            throw new EmptyResultException(
+            throw new Exception\EmptyResultException(
                 'XPath error: '.$this->search.' not found.'
             );
         }
