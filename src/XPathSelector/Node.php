@@ -1,5 +1,6 @@
 <?php
 namespace XPathSelector;
+
 use DOMXPath;
 
 class Node

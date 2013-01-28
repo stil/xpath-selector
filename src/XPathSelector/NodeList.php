@@ -1,7 +1,8 @@
 <?php
 namespace XPathSelector;
-use Iterator,
-    Countable;
+
+use Iterator;
+use Countable;
 
 class NodeList implements Iterator, Countable
 {

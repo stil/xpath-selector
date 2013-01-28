@@ -1,7 +1,8 @@
 <?php
 namespace XPathSelector;
-use DOMXPath,
-    DOMDocument;
+
+use DOMXPath;
+use DOMDocument;
 
 class Document
 {
@@ -13,25 +14,29 @@ class Document
     
     public static function loadHTMLFile($filename)
     {
-        $doc = @DOMDocument::loadHTMLFile($filename);
+        $doc = new DOMDocument;
+        @$doc->loadHTMLFile($filename);
         return self::load($doc);
     }
     
     public static function loadHTML($html)
     {
-        $doc = @DOMDocument::loadHTML($html);
+        $doc = new DOMDocument;
+        @$doc->loadHTML($html);
         return self::load($doc);
     }
     
     public static function loadXML($xml)
     {
-        $doc = DOMDocument::loadXML($xml);
+        $doc = new DOMDocument;
+        @$doc->loadXML($xml);
         return self::load($doc);
     }
     
     public static function loadXMLFile($filename)
     {
-        $doc = DOMDocument::load($filename);
+        $doc = new DOMDocument;
+        @$doc->load($filename);
         return self::load($doc);
     }
 }

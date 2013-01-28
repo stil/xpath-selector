@@ -1,5 +1,6 @@
 <?php
 namespace XPathSelector\Tests;
+
 use XPathSelector;
 
 class MainTest extends TestCase
@@ -38,8 +39,10 @@ class MainTest extends TestCase
         $this->assertEquals(0, $nodes->count());
         
         $e = null;
-        try {$nodes->extract();}
-        catch(\Exception $e) {}
+        try {
+            $nodes->extract();
+        } catch (\Exception $e) {
+        }
         $this->assertInstanceOf('\XPathSelector\Exception\EmptyResultException', $e);
         
         $nodes = $hxs->select('/bookstore/book/title');
