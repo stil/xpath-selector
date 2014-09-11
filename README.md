@@ -12,7 +12,40 @@ Recommended way to install XPathSelector is through [Composer](http://getcompose
     }
 }
 ```
-##Example XML document
+
+###Introduction
+The starting point of all searches is `XPathSelector\Selector` class. It allows you to load HTML or XML, so you can process it then. There are several methods to do it:
+```php
+use XPathSelector\Selector;
+$xs = Selector::load($pathToXml);
+$xs = Selector::loadHTMLFile($pathToHtml);
+$xs = Selector::loadXML($xmlString);
+$xs = Selector::loadHTML($htmlString);
+```
+
+Next thing you want to do, is to decide whether you're searching for single DOM element or multiple elements.
+For single search use `find($query)` method.
+```php
+use XPathSelector\Exception\NotFoundException;
+
+try {
+	$element = $xs->find('//head'); // returns first <head> element found
+	echo $element->innerHTML(); // print innerHTML of <head> tag
+} catch (NotFoundException $e) {
+	echo $e->getMessage(); // nothing have been found
+}
+```
+And if you need multiple results, use `findAll($query)` instead. This method returns instance of `XPathSelector\NodeListInterface`. Check it out in the API.
+```php
+use XPathSelector\Selector;
+
+$urls = $xs->findAll('//a/@href');
+foreach ($urls as $url) {
+	echo $url;
+}
+```
+
+###sample.xml
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <bookstore>
