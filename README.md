@@ -1,7 +1,8 @@
 #XPathSelector
 ##Description
-This is simple utlitity which helps you navigate in HTML or XML document.
-It was inspired by Python's Scrapy. XPathSelector uses PHP DOM extension.
+XPathSelector is a libary created for HTML webscraping. It was inspired by Python's Scrapy.
+It uses PHP DOM extension, so make sure you have it installed. PHP 5.4 is minimum.
+
 ##Installation
 Recommended way to install XPathSelector is through [Composer](http://getcomposer.org/).
 ```json
@@ -45,28 +46,30 @@ Recommended way to install XPathSelector is through [Composer](http://getcompose
 	</book>
 </bookstore>
 ```
-###Extract first title of the book
+###Search for single result
 ```php
 <?php
-$xs = \XPathSelector\Document::loadXMLFile('sample.xml');
-$firstBook = $xs->select('/bookstore/book[1]');
-echo $firstBook->select('title')->extract();
-// or directly
-//echo $xs->select('/bookstore/book[1]/title')->extract();
+use XPathSelector\Selector;
+$xs = Selector::load('sample.xml');
+
+echo $xs->find('/bookstore/book[1]/title');
 ```
 Result:
 ```
 Everyday Italian
 ```
-###Extract all titles with their prices
+###Search for multiple results
 ```php
 <?php
-$xs = \XPathSelector\Document::loadXMLFile('sample.xml');
-foreach ($xs->select('/bookstore/book') as $book) {
-	echo 'Title: '.$book->select('title')->extract();
-	echo PHP_EOL;
-	echo 'Price: '.$book->select('price')->extract();
-	echo PHP_EOL;
+use XPathSelector\Selector;
+$xs = Selector::load('sample.xml');
+
+foreach ($xs->findAll('/bookstore/book') as $book) {
+	printf(
+		"[Title: %s][Price: %s]\n",
+		$book->find('title')->extract(),
+		$book->find('price')->extract()
+	);
 }
 ```
 Result:
@@ -76,33 +79,60 @@ Result:
 [Title: XQuery Kick Start][Price: 49.99]
 [Title: Learning XML][Price: 39.95]
 ```
-###Extract all the prices
+###Map result set to array
 ```php
 <?php
-$xs = \XPathSelector\Document::loadXMLFile('sample.xml');
-foreach ($xs->select('/bookstore/book/price') as $price) {
-	echo $price->extract();
-    echo PHP_EOL;
-}
+use XPathSelector\Selector;
+$xs = Selector::load('sample.xml');
+
+$array = $xs->findAll('/bookstore/book')->map(function ($node, $index) {
+	return [
+		'index' => $index,
+		'title' => $node->find('title')->extract(),
+		'price' => (float)$node->find('price')->extract()
+	];
+});
+
+var_dump($array);
 ```
 Result:
 ```
-30.00
-29.99
-49.99
-39.95
-```
-###Extract price nodes with price>35
-```php
-<?php
-$xs = \XPathSelector\Document::loadXMLFile('sample.xml');
-foreach ($xs->select('/bookstore/book[price>35]/price') as $price) {
-	echo $price->extract();
-    echo PHP_EOL;
+array(4) {
+  [0] =>
+  array(3) {
+    'index' =>
+    int(0)
+    'title' =>
+    string(16) "Everyday Italian"
+    'price' =>
+    double(30)
+  }
+  [1] =>
+  array(3) {
+    'index' =>
+    int(1)
+    'title' =>
+    string(12) "Harry Potter"
+    'price' =>
+    double(29.99)
+  }
+  [2] =>
+  array(3) {
+    'index' =>
+    int(2)
+    'title' =>
+    string(17) "XQuery Kick Start"
+    'price' =>
+    double(49.99)
+  }
+  [3] =>
+  array(3) {
+    'index' =>
+    int(3)
+    'title' =>
+    string(12) "Learning XML"
+    'price' =>
+    double(39.95)
+  }
 }
-```
-Result:
-```
-49.99
-39.95
 ```
