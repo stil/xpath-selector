@@ -26,12 +26,12 @@ $xs = Selector::loadHTML($htmlString);
 Next thing you want to do, is to decide whether you're searching for single DOM element or multiple elements.
 For single search use `find($query)` method.
 ```php
-use XPathSelector\Exception\NotFoundException;
+use XPathSelector\Exception\NodeNotFoundException;
 
 try {
 	$element = $xs->find('//head'); // returns first <head> element found
 	echo $element->innerHTML(); // print innerHTML of <head> tag
-} catch (NotFoundException $e) {
+} catch (NodeNotFoundException $e) {
 	echo $e->getMessage(); // nothing have been found
 }
 ```
@@ -43,6 +43,13 @@ $urls = $xs->findAll('//a/@href');
 foreach ($urls as $url) {
 	echo $url;
 }
+```
+
+Do you need to check whether XPath path exists? Use `findOneOrNull($query)` method. It returns `Node` object or null, when no results were found. It works just like `find($query)`, except it returns null instead of throwing exception.
+```php
+use XPathSelector\Selector;
+
+$doesExist = $xs->findOneOrNull('//a/@href') !== null;
 ```
 
 ###sample.xml
