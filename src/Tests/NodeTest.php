@@ -6,13 +6,37 @@ use XPathSelector\Exception;
 
 class NodeTest extends TestCase
 {
-    public function testTopNode()
+    /**
+     * @var Selector
+     */
+    protected $htmlSelector;
+
+    /**
+     * @var Selector
+     */
+    protected $xmlSelector;
+
+    public function __construct()
+    {
+        $this->htmlSelector = Selector::loadHTMLFile(__DIR__.'/Resources/test.html');
+    }
+
+    public function testGetDOMNode()
+    {
+        $xs = $this->htmlSelector;
+        $this->assertInstanceOf('DOMNode', $xs->getDOMNode());
+    }
+
+    public function testGetDOMXPath()
+    {
+        $xs = $this->htmlSelector;
+        $this->assertInstanceOf('DOMXPath', $xs->getDOMXPath());
+    }
+
+    public function testInnerHtml()
     {
         $xmlPath = __DIR__.'/Resources/test.xml';
         $xs = Selector::load($xmlPath);
-        
-        $this->assertInstanceOf('DOMNode', $xs->getDOMNode());
-        $this->assertInstanceOf('DOMXPath', $xs->getDOMXPath());
         $this->assertEquals($xs->innerHTML(), '<bookstore>
     <book category="COOKING">
         <title lang="en">Everyday Italian</title>
@@ -45,18 +69,26 @@ class NodeTest extends TestCase
 </bookstore>');
     }
 
-    public function testNode()
+    public function testFind()
     {
-        $xs = Selector::loadHTMLFile(__DIR__.'/Resources/test.html');
+        $xs = $this->htmlSelector;
 
         $exception = false;
         try {
             $xs->find('//titl')->extract();
-        } catch (Exception\NotFoundException $e) {
+        } catch (Exception\NodeNotFoundException $e) {
             $exception = true;
         }
         $this->assertTrue($exception);
-        
+
+        $exception = false;
+        try {
+            $xs->find('//////')->extract();
+        } catch (Exception\XPathException $e) {
+            $exception = true;
+        }
+        $this->assertTrue($exception);
+
         $this->assertEquals(
             'PHP: DOMNode - Manual ',
             $xs->find('//title')->extract()
@@ -76,5 +108,11 @@ class NodeTest extends TestCase
             '<a href="/" class="brand"><img src="/images/logo.php" width="48" height="24" alt="php"></a>',
             $xs->find('//a[@class="brand"][1]')->outerHTML()
         );
+    }
+
+    public function testFindOneOrNull()
+    {
+        $xs = $this->htmlSelector;
+        $this->assertNull($xs->findOneOrNull('//title[15]'));
     }
 }

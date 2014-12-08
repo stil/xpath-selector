@@ -23,8 +23,11 @@ class NodeList implements \IteratorAggregate, \Countable, NodeListInterface
     
     public function item($index)
     {
-        return isset($this->childNodes[$index]) ?
-            $this->childNodes[$index] : null;
+        if (isset($this->childNodes[$index])) {
+            return $this->childNodes[$index];
+        } else {
+            throw new \OutOfBoundsException("Node with index $index does not exist in query results.");
+        }
     }
     
     public function getIterator()
@@ -32,14 +35,14 @@ class NodeList implements \IteratorAggregate, \Countable, NodeListInterface
         return new \ArrayIterator($this->childNodes);
     }
 
-    public function each($callback)
+    public function each(callable $callback)
     {
         foreach ($this->childNodes as $index => $node) {
             $callback($node, $index);
         }
     }
 
-    public function map($callback)
+    public function map(callable $callback)
     {
         $result = [];
         foreach ($this->childNodes as $index => $node) {

@@ -11,3 +11,4 @@ Desktop.ini
 vendor/
 composer.lock
 phpunit.phar
+.idea

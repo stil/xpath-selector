@@ -11,17 +11,18 @@ interface NodeListInterface
 
     /**
      * Returns node by given index
-     * @param  int $index
-     * @return mixed
+     * @param  int $index Zero starting index of element
+     * @throws \OutOfBoundsException
+     * @return Node
      */
     public function item($index);
 
     /**
-     * Executes provided function for each element in list
+     * Executes provided function for each element in list.
      * @param  callable $callback
-     * @return array
+     * @return void
      */
-    public function each($callback);
+    public function each(callable $callback);
 
     /**
      * Creates a new array with the results of calling
@@ -29,5 +30,5 @@ interface NodeListInterface
      * @param  callable $callback
      * @return array
      */
-    public function map($callback);
+    public function map(callable $callback);
 }

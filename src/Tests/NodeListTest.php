@@ -1,11 +1,15 @@
 <?php
 namespace XPathSelector\Tests;
 
+use XPathSelector\Node;
 use XPathSelector\Selector;
 use XPathSelector\Exception;
 
 class NodeListTest extends TestCase
 {
+    /**
+     * @var Selector
+     */
     protected $xs;
 
     public function __construct()
@@ -20,10 +24,25 @@ class NodeListTest extends TestCase
         $this->assertEquals(160, $divs->count());
     }
 
+    public function testItem()
+    {
+        $divs = $this->xs->findAll('//div');
+
+        $this->assertInstanceOf("XPathSelector\\Node", $divs->item(150));
+
+        $ex = false;
+        try {
+            $divs->item(99999);
+        } catch (\OutOfBoundsException $e) {
+            $ex = true;
+        }
+        $this->assertTrue($ex);
+    }
+
     public function testMap()
     {
         $langs = $this->xs->findAll('//select[@id="changelang-langs"]/option');
-        $str = implode(', ', $langs->map(function ($node) {
+        $str = implode(', ', $langs->map(function (Node $node) {
             return $node->extract();
         }));
 
@@ -39,7 +58,7 @@ class NodeListTest extends TestCase
         $langs = $this->xs->findAll('//select[@id="changelang-langs"]/option');
 
         $str = [];
-        $langs->each(function ($node) use (&$str) {
+        $langs->each(function (Node $node) use (&$str) {
             $str[] = $node->extract();
         });
 

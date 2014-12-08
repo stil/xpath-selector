@@ -1,16 +1,25 @@
 <?php
 namespace XPathSelector;
 
+use XPathSelector\Exception\NodeNotFoundException;
+use XPathSelector\Exception\XPathException;
+use DOMXPath;
+use DOMDocument;
+use DOMNode;
+
 class Node implements NodeInterface
 {
+    /**
+     * @var DOMXPath
+     */
     protected $xpath;
 
-    public function __construct(\DOMNode $node, $xpath = null)
+    public function __construct(DOMNode $node, $xpath = null)
     {
         $this->node = $node;
 
-        if ($node instanceof \DOMDocument) {
-            $this->xpath = new \DOMXPath($node);
+        if ($node instanceof DOMDocument) {
+            $this->xpath = new DOMXPath($node);
         } else {
             $this->xpath = $xpath;
         }
@@ -25,14 +34,33 @@ class Node implements NodeInterface
     {
         return $this->xpath;
     }
+
+    protected function internalQuery($query)
+    {
+        $nodeList = @$this->xpath->query($query, $this->node);
+        if ($nodeList == false) {
+            throw new XPathException("Invalid expression $query");
+        } else {
+            return $nodeList;
+        }
+    }
     
     public function find($query)
     {
-        $nodeList = $this->xpath->query($query, $this->node);
+        $nodeList = $this->internalQuery($query);
         if ($nodeList->length == 0) {
-            throw new Exception\NotFoundException("Query $query returned no results");
+            throw new NodeNotFoundException("Query $query returned no results");
         }
         return new Node($nodeList->item(0), $this->xpath);
+    }
+
+    public function findOneOrNull($query)
+    {
+        try {
+            return $this->find($query);
+        } catch (NodeNotFoundException $e) {
+            return null;
+        }
     }
 
     public function findAll($query)
@@ -40,7 +68,7 @@ class Node implements NodeInterface
         return new NodeList(
             $query,
             $this->xpath,
-            $this->xpath->query($query, $this->node)
+            $this->internalQuery($query)
         );
     }
 
@@ -56,7 +84,7 @@ class Node implements NodeInterface
 
     public function innerHTML()
     {
-        if ($this->node instanceof \DOMDocument) {
+        if ($this->node instanceof DOMDocument) {
             $doc = $this->node;
         } else {
             $doc = $this->node->ownerDocument;
@@ -72,7 +100,7 @@ class Node implements NodeInterface
 
     public function outerHTML()
     {
-        if ($this->node instanceof \DOMDocument) {
+        if ($this->node instanceof DOMDocument) {
             return $this->node->saveHTML();
         } else {
             return $this->node->ownerDocument->saveHTML($this->node);
