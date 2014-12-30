@@ -1,5 +1,11 @@
 {
     "name": "stil/xpath-selector",
+    "description": "A library which makes it easy to web scrape HTML or XML pages. Uses XPath queries.",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4",
+        "ext-dom": "*"
+    },
     "autoload": {
         "psr-4": {
             "XPathSelector\\": "src/"
