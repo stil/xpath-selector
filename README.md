@@ -4,13 +4,9 @@ XPathSelector is a libary created for HTML webscraping. It was inspired by Pytho
 It uses PHP DOM extension, so make sure you have it installed. PHP 5.4 is minimum.
 
 ##Installation
-Recommended way to install XPathSelector is through [Composer](http://getcomposer.org/).
-```json
-{
-    "require": {
-        "stil/xpath-selector": "*"
-    }
-}
+Recommended way to install XPathSelector is through [Composer](http://getcomposer.org/). Run following command:
+```bash
+composer require stil/xpath-selector
 ```
 
 ###Introduction
